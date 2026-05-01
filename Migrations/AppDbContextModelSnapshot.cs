@@ -93,11 +93,18 @@ namespace NutriTrack.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<int>("UserGender")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.Property<double>("Weight")
                         .HasColumnType("REAL");
@@ -113,9 +120,11 @@ namespace NutriTrack.Migrations
                             Activity = 2,
                             Age = 19,
                             Height = 196.0,
-                            Name = "Admin",
+                            Name = "Адміністратор",
+                            Password = "admin",
                             UserGender = 0,
-                            Weight = 94.0
+                            Username = "admin",
+                            Weight = 93.0
                         });
                 });
 

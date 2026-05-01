@@ -41,7 +41,12 @@ public class SqliteNutriRepository : INutriRepository
     
     public async Task<User?> GetUserAsync(int userId) 
         => await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
-
+    
+    public async Task<User?> GetUserByUsernameAsync(string username)
+    {
+        return await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
+    }
+    
     public async Task UpdateUserAsync(User user)
     {
         _context.Users.Update(user);

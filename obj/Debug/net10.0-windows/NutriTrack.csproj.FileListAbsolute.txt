@@ -109,11 +109,9 @@ F:\University\2 year\2 семестр\КПЗ\NutriTrack\NutriTrack\bin\Debug\net
 F:\University\2 year\2 семестр\КПЗ\NutriTrack\NutriTrack\bin\Debug\net10.0-windows\runtimes\win-x64\native\e_sqlite3.dll
 F:\University\2 year\2 семестр\КПЗ\NutriTrack\NutriTrack\bin\Debug\net10.0-windows\runtimes\win-x86\native\e_sqlite3.dll
 F:\University\2 year\2 семестр\КПЗ\NutriTrack\NutriTrack\obj\Debug\net10.0-windows\NutriTrack.csproj.AssemblyReference.cache
-F:\University\2 year\2 семестр\КПЗ\NutriTrack\NutriTrack\obj\Debug\net10.0-windows\MainWindow.g.cs
 F:\University\2 year\2 семестр\КПЗ\NutriTrack\NutriTrack\obj\Debug\net10.0-windows\App.g.cs
 F:\University\2 year\2 семестр\КПЗ\NutriTrack\NutriTrack\obj\Debug\net10.0-windows\NutriTrack_MarkupCompile.cache
 F:\University\2 year\2 семестр\КПЗ\NutriTrack\NutriTrack\obj\Debug\net10.0-windows\NutriTrack_MarkupCompile.lref
-F:\University\2 year\2 семестр\КПЗ\NutriTrack\NutriTrack\obj\Debug\net10.0-windows\MainWindow.baml
 F:\University\2 year\2 семестр\КПЗ\NutriTrack\NutriTrack\obj\Debug\net10.0-windows\NutriTrack.g.resources
 F:\University\2 year\2 семестр\КПЗ\NutriTrack\NutriTrack\obj\Debug\net10.0-windows\NutriTrack.GeneratedMSBuildEditorConfig.editorconfig
 F:\University\2 year\2 семестр\КПЗ\NutriTrack\NutriTrack\obj\Debug\net10.0-windows\NutriTrack.AssemblyInfoInputs.cache
@@ -143,3 +141,8 @@ F:\University\2 year\2 семестр\КПЗ\NutriTrack\NutriTrack\bin\Debug\net
 F:\University\2 year\2 семестр\КПЗ\NutriTrack\NutriTrack\bin\Debug\net10.0-windows\tr\Microsoft.CodeAnalysis.Workspaces.MSBuild.resources.dll
 F:\University\2 year\2 семестр\КПЗ\NutriTrack\NutriTrack\bin\Debug\net10.0-windows\zh-Hans\Microsoft.CodeAnalysis.Workspaces.MSBuild.resources.dll
 F:\University\2 year\2 семестр\КПЗ\NutriTrack\NutriTrack\bin\Debug\net10.0-windows\zh-Hant\Microsoft.CodeAnalysis.Workspaces.MSBuild.resources.dll
+F:\University\2 year\2 семестр\КПЗ\NutriTrack\NutriTrack\obj\Debug\net10.0-windows\NutriTrack.sourcelink.json
+F:\University\2 year\2 семестр\КПЗ\NutriTrack\NutriTrack\obj\Debug\net10.0-windows\Views\LoginWindow.g.cs
+F:\University\2 year\2 семестр\КПЗ\NutriTrack\NutriTrack\obj\Debug\net10.0-windows\Views\MainWindow.g.cs
+F:\University\2 year\2 семестр\КПЗ\NutriTrack\NutriTrack\obj\Debug\net10.0-windows\Views\LoginWindow.baml
+F:\University\2 year\2 семестр\КПЗ\NutriTrack\NutriTrack\obj\Debug\net10.0-windows\Views\MainWindow.baml
