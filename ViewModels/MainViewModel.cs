@@ -21,6 +21,30 @@ public class MainViewModel : BaseViewModel
         private User? _currentUser;
         private Product? _selectedProduct;
         private double _inputWeight;
+        private string _searchText = string.Empty;
+        
+        private double _totalProteins;
+        private double _totalFats;
+        private double _totalCarbs;
+
+        public double TotalProteins { get => _totalProteins; set => SetProperty(ref _totalProteins, value); }
+        public double TotalFats { get => _totalFats; set => SetProperty(ref _totalFats, value); }
+        public double TotalCarbs { get => _totalCarbs; set => SetProperty(ref _totalCarbs, value); }
+        public double CurrentCalories { get => _currentCalories; set => SetProperty(ref _currentCalories, value); }
+
+        public ObservableCollection<Product> FilteredProducts { get; } = new();
+
+        public string SearchText
+        {
+            get => _searchText;
+            set
+            {
+                if (SetProperty(ref _searchText, value))
+                {
+                    ApplyFilter();
+                }
+            }
+        }
         
         public ObservableCollection<Product> AvailableProducts { get; } = new();
         
@@ -28,7 +52,13 @@ public class MainViewModel : BaseViewModel
         public Product? SelectedProduct
         {
             get => _selectedProduct;
-            set => SetProperty(ref _selectedProduct, value);
+            set
+            {
+                if (SetProperty(ref _selectedProduct, value))
+                {
+                    CommandManager.InvalidateRequerySuggested();
+                }
+            }
         }
 
         public double InputWeight
@@ -45,12 +75,6 @@ public class MainViewModel : BaseViewModel
             set => SetProperty(ref _dailyGoal, value);
         }
 
-        public double CurrentCalories
-        {
-            get => _currentCalories;
-            set => SetProperty(ref _currentCalories, value);
-        }
-
         public MainViewModel(INutriRepository repository, User user)
         {
             _repository = repository;
@@ -59,10 +83,33 @@ public class MainViewModel : BaseViewModel
             
             _currentUser = user;
             
-            AddFoodCommand = new RelayCommand(async (p) => await AddFoodEntry(), (p) => CanAddFood());
+            AddFoodCommand = new RelayCommand(async _ => await AddFoodEntry(), _ => CanAddFood());
             OpenAddProductWindowCommand = new RelayCommand(_ => OpenAddProductWindow());
             
             Task.Run(InitializeAsync);
+        }
+        
+        private bool CanAddFood()
+        {
+            bool hasProduct = SelectedProduct != null;
+            bool hasWeight = InputWeight > 0;
+            
+            return hasProduct && hasWeight;
+        }
+        
+        private void ApplyFilter()
+        {
+            var search = (SearchText ?? "").ToLower().Trim();
+    
+            var filtered = AvailableProducts
+                .Where(p => string.IsNullOrWhiteSpace(search) || p.Name.ToLower().Contains(search))
+                .ToList();
+
+            FilteredProducts.Clear();
+            foreach (var p in filtered) 
+            {
+                FilteredProducts.Add(p);
+            }
         }
         
         private void OpenAddProductWindow()
@@ -77,11 +124,6 @@ public class MainViewModel : BaseViewModel
 
             win.ShowDialog();
         }
-        
-        private bool CanAddFood() 
-        {
-            return SelectedProduct != null && InputWeight > 0;
-        }
 
         private async Task AddFoodEntry()
         {
@@ -90,14 +132,17 @@ public class MainViewModel : BaseViewModel
                 UserId = _currentUser.Id,
                 ProductId = SelectedProduct.Id,
                 ConsumptionDate = DateTime.Now,
-                ServingSizeGrams = InputWeight
+                ServingSizeGrams = InputWeight,
+                Product = SelectedProduct 
             };
 
             await _repository.AddFoodLogAsync(newLog);
             await _repository.SaveChangesAsync();
             
-            TodayLogs.Add(newLog);
-            UpdateTotals();
+            App.Current.Dispatcher.Invoke(() => {
+                TodayLogs.Add(newLog);
+                UpdateTotals();
+            });
         }
     
 
@@ -117,7 +162,9 @@ public class MainViewModel : BaseViewModel
             
                     AvailableProducts.Clear();
                     foreach (var p in products) AvailableProducts.Add(p);
-            
+                    
+                    ApplyFilter();
+                    
                     UpdateTotals();
                 });
             }
@@ -125,6 +172,23 @@ public class MainViewModel : BaseViewModel
 
         private void UpdateTotals()
         {
-            CurrentCalories = TodayLogs.Sum(l => (l.Product.Calories * l.ServingSizeGrams) / 100);
+            double cals = 0, prot = 0, fat = 0, carbs = 0;
+
+            foreach (var log in TodayLogs)
+            {
+                if (log.Product == null) continue;
+                
+                double ratio = log.ServingSizeGrams / 100.0;
+
+                cals += log.Product.Calories * ratio;
+                prot += log.Product.Proteins * ratio;
+                fat += log.Product.Fats * ratio;
+                carbs += log.Product.Carbohydrates * ratio;
+            }
+
+            CurrentCalories = cals;
+            TotalProteins = prot;
+            TotalFats = fat;
+            TotalCarbs = carbs;
         }
 }

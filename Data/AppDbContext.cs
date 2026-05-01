@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.IO;
+using Microsoft.EntityFrameworkCore;
 using NutriTrack.Models;
 
 namespace NutriTrack.Data;
@@ -11,7 +12,10 @@ public class AppDbContext:DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseSqlite("Data Source=nutritrack.db");
+        string baseDir = AppDomain.CurrentDomain.BaseDirectory;
+        string dbPath = Path.Combine(baseDir, "..", "..", "..", "nutritrack.db");
+
+        optionsBuilder.UseSqlite($"Data Source={dbPath}");
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -9,74 +9,84 @@
         Background="#F5F5F5">
     <Grid Margin="20">
 <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="2*" />
-            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="300" />
+            <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         
-        <StackPanel Grid.Column="0" Margin="0,0,10,0">
-            <TextBlock Text="Сьогоднішній журнал" FontSize="20" FontWeight="Bold" Margin="0,0,0,15"/>
+        <Border Grid.Column="0" Background="#F8F9FA" BorderBrush="#DEE2E6" BorderThickness="0,0,1,0">
+        <DockPanel Margin="15">
+            <TextBlock DockPanel.Dock="Top" Text="Вибір продуктів" FontSize="18" FontWeight="Bold" Margin="0,0,0,15"/>
             
-            <Border Background="White" CornerRadius="8" Padding="15" Margin="0,0,0,15">
-                <StackPanel Orientation="Horizontal">
-                    <StackPanel Margin="0,0,30,0">
-                        <TextBlock Text="Ціль" Foreground="Gray"/>
-                        <TextBlock Text="{Binding DailyGoal, StringFormat='{}{0} ккал'}" FontSize="18" FontWeight="Medium"/>
-                    </StackPanel>
-                    <StackPanel>
-                        <TextBlock Text="Спожито" Foreground="Gray"/>
-                        <TextBlock Text="{Binding CurrentCalories, StringFormat='{}{0} ккал'}" FontSize="18" FontWeight="Medium" />
-                    </StackPanel>
-                </StackPanel>
-            </Border>
-
-            <ListBox ItemsSource="{Binding TodayLogs}" Height="300" Background="Transparent" BorderThickness="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <Border Background="White" CornerRadius="5" Margin="0,2" Padding="10">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-                                <StackPanel>
-                                    <TextBlock Text="{Binding Product.Name}" FontWeight="Bold"/>
-                                    <TextBlock Text="{Binding ServingSizeGrams, StringFormat='{}{0} г'}" FontSize="12" Foreground="Gray"/>
-                                </StackPanel>
-                                <TextBlock Grid.Column="1" Text="{Binding TotalCalories, StringFormat='{}{0} ккал'}" 
-                                           VerticalAlignment="Center" FontWeight="Bold" Foreground="Green"/>
-                            </Grid>
-                        </Border>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
-        </StackPanel>
-        
-        <Border Grid.Column="1" Background="White" CornerRadius="8" Padding="15" VerticalAlignment="Top">
-            <StackPanel>
-                <TextBlock Text="Додати їжу" FontSize="18" FontWeight="Bold" Margin="0,0,0,15"/>
-                
-                <TextBlock Text="Продукт:" Margin="0,0,0,5"/>
-                <ComboBox ItemsSource="{Binding AvailableProducts}" 
-                          SelectedItem="{Binding SelectedProduct}"
-                          DisplayMemberPath="Name" Margin="0,0,0,15"/>
-
-                <TextBlock Text="Вага (г):" Margin="0,0,0,5"/>
-                <TextBox Text="{Binding InputWeight, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,20" Padding="5"/>
+            <StackPanel DockPanel.Dock="Bottom">
+                <TextBlock Text="Вага порції (г):" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                <TextBox Text="{Binding InputWeight, UpdateSourceTrigger=PropertyChanged}" 
+                         Padding="8" Margin="0,0,0,10"/>
 
                 <Button Content="Додати в щоденник" 
                         Command="{Binding AddFoodCommand}"
-                        Background="#4CAF50" Foreground="White" FontWeight="Bold" Padding="10" BorderThickness="0">
-                    <Button.Resources>
-                        <Style TargetType="Border">
-                            <Setter Property="CornerRadius" Value="5"/>
-                        </Style>
-                    </Button.Resources>
-                </Button>
+                        Background="#4CAF50" Foreground="White" FontWeight="Bold" 
+                        Padding="10" Margin="0,5"/>
+    
                 <Button Content="Створити новий продукт" 
                         Command="{Binding OpenAddProductWindowCommand}"
                         Background="#2196F3" Foreground="White" 
-                        Padding="10" Margin="0,10,0,0"/>
+                        Padding="10" Margin="0,5"/>
             </StackPanel>
+            
+            <StackPanel>
+                <TextBlock Text="Пошук:" Margin="0,0,0,5"/>
+                <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" Padding="8" Margin="0,0,0,10"/>
+                
+                <ListBox ItemsSource="{Binding FilteredProducts}" 
+                         SelectedItem="{Binding SelectedProduct, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                         DisplayMemberPath="Name"
+                         Height="300" BorderThickness="1" BorderBrush="#DEE2E6"/>
+            </StackPanel>
+        </DockPanel>
+    </Border>
+        
+    <Grid Grid.Column="1" Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
+        <StackPanel Grid.Row="0">
+            <TextBlock Text="Денна норма калорій" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,10"/>
+            <ProgressBar Value="{Binding CurrentCalories}" Maximum="{Binding DailyGoal}" Height="20" Foreground="#4CAF50"/>
+            <TextBlock HorizontalAlignment="Right" Margin="0,5,0,0">
+                <Run Text="{Binding CurrentCalories, StringFormat={}{0:F0}}"/> 
+                <Run Text=" / "/> 
+                <Run Text="{Binding DailyGoal, StringFormat={}{0:F0}}"/> 
+                <Run Text=" ккал"/>
+            </TextBlock>
+        </StackPanel>
+        
+        <DataGrid Grid.Row="1" ItemsSource="{Binding TodayLogs}" AutoGenerateColumns="False" Margin="0,20" IsReadOnly="True">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Продукт" Binding="{Binding Product.Name}" Width="*"/>
+                <DataGridTextColumn Header="Калорії" Binding="{Binding Product.Calories}" Width="80"/>
+                <DataGridTextColumn Header="Дата" Binding="{Binding ConsumptionDate, StringFormat={}{0:HH:mm}}" Width="80"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        
+        <Border Grid.Row="2" Background="#E9ECEF" Padding="15" CornerRadius="8">
+            <UniformGrid Columns="3">
+                <StackPanel HorizontalAlignment="Center">
+                    <TextBlock Text="Білки" FontSize="12" Foreground="#6C757D"/>
+                    <TextBlock Text="120г" FontWeight="Bold"/> <!-- Сюди пізніше забіндимо реальні суми -->
+                </StackPanel>
+                <StackPanel HorizontalAlignment="Center">
+                    <TextBlock Text="Жири" FontSize="12" Foreground="#6C757D"/>
+                    <TextBlock Text="60г" FontWeight="Bold"/>
+                </StackPanel>
+                <StackPanel HorizontalAlignment="Center">
+                    <TextBlock Text="Вуглеводи" FontSize="12" Foreground="#6C757D"/>
+                    <TextBlock Text="240г" FontWeight="Bold"/>
+                </StackPanel>
+            </UniformGrid>
         </Border>
+    </Grid>
     </Grid>
 </Window>
