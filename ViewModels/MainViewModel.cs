@@ -48,14 +48,17 @@ public class MainViewModel : BaseViewModel
             set => SetProperty(ref _currentCalories, value);
         }
 
-        public MainViewModel(INutriRepository repository)
+        public MainViewModel(INutriRepository repository, User user)
         {
             _repository = repository;
             _calculator = new CalorieCalculator();
             _calculator.SetStrategy(new MifflinStJeorStrategy());
             
-            Task.Run(InitializeAsync);
+            _currentUser = user;
+            
             AddFoodCommand = new RelayCommand(async (p) => await AddFoodEntry(), (p) => CanAddFood());
+            
+            Task.Run(InitializeAsync);
         }
         
         private bool CanAddFood() 

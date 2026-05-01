@@ -28,10 +28,12 @@ public class AppDbContext:DbContext
         modelBuilder.Entity<User>().HasData(
             new User { 
                 Id = 1, 
-                Name = "Admin", 
+                Username = "admin",
+                Password = "admin",
+                Name = "Адміністратор", 
                 Age = 19, 
                 Height = 196, 
-                Weight = 94, 
+                Weight = 93, 
                 UserGender = Gender.Male, 
                 Activity = ActivityLevel.Moderate 
             }

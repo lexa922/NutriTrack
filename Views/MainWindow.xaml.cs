@@ -10,21 +10,20 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using NutriTrack.Data;
 using NutriTrack.Data.Repositories;
+using NutriTrack.Models;
 using NutriTrack.ViewModels;
 
-namespace NutriTrack;
+namespace NutriTrack.Views;
 
 /// <summary>
 /// Interaction logic for MainWindow.xaml
 /// </summary>
 public partial class MainWindow : Window
 {
-    public MainWindow()
+    public MainWindow(User user, INutriRepository repository)
     {
         InitializeComponent();
-        var context = new AppDbContext();
-        var repository = new SqliteNutriRepository(context);
         
-        DataContext = new MainViewModel(repository);
+        this.DataContext = new MainViewModel(repository, user);
     }
 }

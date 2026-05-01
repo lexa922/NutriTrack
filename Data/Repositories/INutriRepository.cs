@@ -13,6 +13,7 @@ public interface INutriRepository
     Task DeleteLogAsync(int logId);
     
     Task<User?> GetUserAsync(int userId);
+    Task<User?> GetUserByUsernameAsync(string username);
     Task UpdateUserAsync(User user);
         
     Task SaveChangesAsync();

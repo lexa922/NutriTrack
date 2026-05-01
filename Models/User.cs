@@ -10,14 +10,17 @@ public class User
     public int Id { get; set; }
 
     [Required]
-    [StringLength(50)]
-    public string Name { get; set; }
+    public string Username { get; set; }
 
+    [Required]
+    public string Password { get; set; }
+    
+    public string Name { get; set; }
     public int Age { get; set; }
     public double Height { get; set; }
     public double Weight { get; set; }
     public Gender UserGender { get; set; }
     public ActivityLevel Activity { get; set; }
-    
+
     public virtual ICollection<FoodLog> Logs { get; set; } = new List<FoodLog>();
 }
