@@ -15,17 +15,22 @@ public class MainViewModel : BaseViewModel
         private readonly CalorieCalculator _calculator;
         public ICommand AddFoodCommand { get; }
         public ICommand OpenAddProductWindowCommand { get; }
+        public ICommand DeleteLogCommand { get; }
+        public ICommand UpdateLogCommand { get; }
+        public ICommand CancelSelectionCommand { get; }
         
         private double _dailyGoal;
         private double _currentCalories;
         private User? _currentUser;
         private Product? _selectedProduct;
-        private double _inputWeight;
+        private double? _inputWeight;
         private string _searchText = string.Empty;
         
         private double _totalProteins;
         private double _totalFats;
         private double _totalCarbs;
+        
+        private FoodLog _selectedLog;
 
         public double TotalProteins { get => _totalProteins; set => SetProperty(ref _totalProteins, value); }
         public double TotalFats { get => _totalFats; set => SetProperty(ref _totalFats, value); }
@@ -46,6 +51,24 @@ public class MainViewModel : BaseViewModel
             }
         }
         
+        public FoodLog SelectedLog 
+        { 
+            get => _selectedLog; 
+            set
+            {
+                if (SetProperty(ref _selectedLog, value))
+                {
+                    if (value != null)
+                    {
+                        InputWeight = value.ServingSizeGrams;
+                        
+                        SelectedProduct = FilteredProducts.FirstOrDefault(p => p.Id == value.ProductId);
+                    }
+                    CommandManager.InvalidateRequerySuggested();
+                }
+            }
+        }
+        
         public ObservableCollection<Product> AvailableProducts { get; } = new();
         
         
@@ -61,10 +84,16 @@ public class MainViewModel : BaseViewModel
             }
         }
 
-        public double InputWeight
+        public double? InputWeight
         {
             get => _inputWeight;
-            set => SetProperty(ref _inputWeight, value);
+            set
+            {
+                if (SetProperty(ref _inputWeight, value))
+                {
+                    CommandManager.InvalidateRequerySuggested();
+                }
+            }
         }
         
         public ObservableCollection<FoodLog> TodayLogs { get; } = new();
@@ -85,6 +114,9 @@ public class MainViewModel : BaseViewModel
             
             AddFoodCommand = new RelayCommand(async _ => await AddFoodEntry(), _ => CanAddFood());
             OpenAddProductWindowCommand = new RelayCommand(_ => OpenAddProductWindow());
+            DeleteLogCommand = new RelayCommand(async _ => await DeleteLog(), _ => SelectedLog != null);
+            UpdateLogCommand = new RelayCommand(async _ => await UpdateLog(), _ => SelectedLog != null);
+            CancelSelectionCommand = new RelayCommand(_ => SelectedLog = null);
             
             Task.Run(InitializeAsync);
         }
@@ -132,7 +164,7 @@ public class MainViewModel : BaseViewModel
                 UserId = _currentUser.Id,
                 ProductId = SelectedProduct.Id,
                 ConsumptionDate = DateTime.Now,
-                ServingSizeGrams = InputWeight,
+                ServingSizeGrams = InputWeight.GetValueOrDefault(),
                 Product = SelectedProduct 
             };
 
@@ -143,6 +175,49 @@ public class MainViewModel : BaseViewModel
                 TodayLogs.Add(newLog);
                 UpdateTotals();
             });
+        }
+        
+        private async Task DeleteLog()
+        {
+            if (SelectedLog == null) return;
+            
+            await _repository.DeleteLogAsync(SelectedLog.Id);
+            await _repository.SaveChangesAsync();
+            
+            TodayLogs.Remove(SelectedLog);
+            
+            UpdateTotals();
+        }
+        
+        private async Task UpdateLog()
+        {
+            double weight = InputWeight.GetValueOrDefault();
+
+            try 
+            {
+                SelectedLog.ServingSizeGrams = weight;
+                SelectedLog.ProductId = SelectedProduct.Id;
+                SelectedLog.Product = SelectedProduct;
+                
+                await _repository.SaveChangesAsync();
+                
+                var index = TodayLogs.IndexOf(SelectedLog);
+                if (index != -1)
+                {
+                    var updatedLog = SelectedLog;
+                    TodayLogs.RemoveAt(index);
+                    TodayLogs.Insert(index, updatedLog);
+                }
+
+                UpdateTotals();
+                
+                SelectedLog = null;
+                System.Windows.MessageBox.Show("Запис успішно оновлено!");
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show($"Помилка збереження: {ex.Message}");
+            }
         }
     
 
