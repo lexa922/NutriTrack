@@ -15,6 +15,7 @@ public interface INutriRepository
     Task<User?> GetUserAsync(int userId);
     Task<User?> GetUserByUsernameAsync(string username);
     Task UpdateUserAsync(User user);
+    Task AddUserAsync(User user);
         
     Task SaveChangesAsync();
 }
