@@ -151,3 +151,4 @@ F:\University\2 year\2 семестр\КПЗ\NutriTrack\NutriTrack\obj\Debug\net
 F:\University\2 year\2 семестр\КПЗ\NutriTrack\NutriTrack\obj\Debug\net10.0-windows\Views\RegisterWindow.baml
 F:\University\2 year\2 семестр\КПЗ\NutriTrack\NutriTrack\obj\Debug\net10.0-windows\Views\AddProductWindow.g.cs
 F:\University\2 year\2 семестр\КПЗ\NutriTrack\NutriTrack\obj\Debug\net10.0-windows\Views\AddProductWindow.baml
+F:\University\2 year\2 семестр\КПЗ\NutriTrack\NutriTrack\obj\Debug\net10.0-windows\GeneratedInternalTypeHelper.g.cs

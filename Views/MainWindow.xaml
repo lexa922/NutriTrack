@@ -3,10 +3,15 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:NutriTrack"
+        xmlns:converters="clr-namespace:NutriTrack.Converters"
         mc:Ignorable="d"
         Title="NutriTrack - Трекер Калорій" Height="500" Width="800"
-        Background="#F5F5F5">
+        Background="#F5F5F5"
+        >
+    <Window.Resources>
+        <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
+        <converters:NullToBoolConverter x:Key="NullToBoolConverter"/>
+    </Window.Resources>
     <Grid Margin="20">
 <Grid.ColumnDefinitions>
             <ColumnDefinition Width="300" />
@@ -25,8 +30,31 @@
                 <Button Content="Додати в щоденник" 
                         Command="{Binding AddFoodCommand}"
                         Background="#4CAF50" Foreground="White" FontWeight="Bold" 
-                        Padding="10" Margin="0,5"/>
-    
+                        Padding="10" Margin="0,5">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Visibility" Value="Visible"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding SelectedLog, Converter={StaticResource NullToBoolConverter}}" Value="True">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+                
+                <Button Content="Оновити запис" 
+                        Command="{Binding UpdateLogCommand}"
+                        Background="#FF9800" Foreground="White" FontWeight="Bold" 
+                        Padding="10" Margin="0,5"
+                        Visibility="{Binding SelectedLog, Converter={StaticResource NullToVisibilityConverter}}"/>
+            
+                <Button Content="Скасувати вибір" 
+                        Command="{Binding CancelSelectionCommand}"
+                        Background="#9E9E9E" Foreground="White" 
+                        Padding="5" Margin="0,5"
+                        Visibility="{Binding SelectedLog, Converter={StaticResource NullToVisibilityConverter}}"/>
+
                 <Button Content="Створити новий продукт" 
                         Command="{Binding OpenAddProductWindowCommand}"
                         Background="#2196F3" Foreground="White" 
@@ -63,30 +91,56 @@
             </TextBlock>
         </StackPanel>
         
-        <DataGrid Grid.Row="1" ItemsSource="{Binding TodayLogs}" AutoGenerateColumns="False" Margin="0,20" IsReadOnly="True">
+        <DataGrid Grid.Row="1" ItemsSource="{Binding TodayLogs}" 
+                  SelectedItem="{Binding SelectedLog, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                  AutoGenerateColumns="False" 
+                  CanUserAddRows="False"
+                  IsReadOnly="True"
+                  Margin="0,0,0,10">
             <DataGrid.Columns>
+                <DataGridTextColumn Header="Час" Binding="{Binding ConsumptionDate, StringFormat={}{0:HH:mm}}" Width="60"/>
                 <DataGridTextColumn Header="Продукт" Binding="{Binding Product.Name}" Width="*"/>
-                <DataGridTextColumn Header="Калорії" Binding="{Binding Product.Calories}" Width="80"/>
-                <DataGridTextColumn Header="Дата" Binding="{Binding ConsumptionDate, StringFormat={}{0:HH:mm}}" Width="80"/>
+                <DataGridTextColumn Header="Вага" Binding="{Binding ServingSizeGrams}" Width="60"/>
+                <DataGridTextColumn Header="Ккал" Binding="{Binding Product.Calories}" Width="60"/>
             </DataGrid.Columns>
         </DataGrid>
         
-        <Border Grid.Row="2" Background="#E9ECEF" Padding="15" CornerRadius="8">
-            <UniformGrid Columns="3">
-                <StackPanel HorizontalAlignment="Center">
-                    <TextBlock Text="Білки" FontSize="12" Foreground="#6C757D"/>
-                    <TextBlock Text="120г" FontWeight="Bold"/> <!-- Сюди пізніше забіндимо реальні суми -->
-                </StackPanel>
-                <StackPanel HorizontalAlignment="Center">
-                    <TextBlock Text="Жири" FontSize="12" Foreground="#6C757D"/>
-                    <TextBlock Text="60г" FontWeight="Bold"/>
-                </StackPanel>
-                <StackPanel HorizontalAlignment="Center">
-                    <TextBlock Text="Вуглеводи" FontSize="12" Foreground="#6C757D"/>
-                    <TextBlock Text="240г" FontWeight="Bold"/>
-                </StackPanel>
-            </UniformGrid>
-        </Border>
+        <Grid Grid.Row="2" Margin="0,10,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            
+            <Border Grid.Column="0" Background="#E9ECEF" Padding="15" CornerRadius="8">
+                <UniformGrid Columns="3">
+                    <StackPanel HorizontalAlignment="Center">
+                        <TextBlock Text="Білки" FontSize="12" Foreground="#6C757D"/>
+                        <TextBlock Text="{Binding TotalProteins, StringFormat={}{0:F1}г}" FontWeight="Bold"/>
+                    </StackPanel>
+                    <StackPanel HorizontalAlignment="Center">
+                        <TextBlock Text="Жири" FontSize="12" Foreground="#6C757D"/>
+                        <TextBlock Text="{Binding TotalFats, StringFormat={}{0:F1}г}" FontWeight="Bold"/>
+                    </StackPanel>
+                    <StackPanel HorizontalAlignment="Center">
+                        <TextBlock Text="Вуглеводи" FontSize="12" Foreground="#6C757D"/>
+                        <TextBlock Text="{Binding TotalCarbs, StringFormat={}{0:F1}г}" FontWeight="Bold"/>
+                    </StackPanel>
+                </UniformGrid>
+            </Border>
+            
+            <Button Grid.Column="1" 
+                    Content="Видалити" 
+                    Command="{Binding DeleteLogCommand}"
+                    Background="#F44336" Foreground="White" 
+                    Padding="15,0" Margin="10,0,0,0"
+                    FontWeight="Bold">
+                <Button.Resources>
+                    <Style TargetType="Border">
+                        <Setter Property="CornerRadius" Value="8"/>
+                    </Style>
+                </Button.Resources>
+            </Button>
+        </Grid>
     </Grid>
-    </Grid>
+        </Grid>
 </Window>
