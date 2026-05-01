@@ -146,3 +146,6 @@ F:\University\2 year\2 семестр\КПЗ\NutriTrack\NutriTrack\obj\Debug\net
 F:\University\2 year\2 семестр\КПЗ\NutriTrack\NutriTrack\obj\Debug\net10.0-windows\Views\MainWindow.g.cs
 F:\University\2 year\2 семестр\КПЗ\NutriTrack\NutriTrack\obj\Debug\net10.0-windows\Views\LoginWindow.baml
 F:\University\2 year\2 семестр\КПЗ\NutriTrack\NutriTrack\obj\Debug\net10.0-windows\Views\MainWindow.baml
+F:\University\2 year\2 семестр\КПЗ\NutriTrack\NutriTrack\bin\Debug\net10.0-windows\BCrypt.Net-Next.dll
+F:\University\2 year\2 семестр\КПЗ\NutriTrack\NutriTrack\obj\Debug\net10.0-windows\Views\RegisterWindow.g.cs
+F:\University\2 year\2 семестр\КПЗ\NutriTrack\NutriTrack\obj\Debug\net10.0-windows\Views\RegisterWindow.baml

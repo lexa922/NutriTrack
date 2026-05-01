@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "SX4NnWZnHnw=",
+  "dgSpecHash": "0dKhOOhuJTM=",
   "success": true,
   "projectFilePath": "F:\\University\\2 year\\2 семестр\\КПЗ\\NutriTrack\\NutriTrack\\NutriTrack.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\lexa\\.nuget\\packages\\bcrypt.net-next\\4.1.0\\bcrypt.net-next.4.1.0.nupkg.sha512",
     "C:\\Users\\lexa\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\lexa\\.nuget\\packages\\microsoft.build.framework\\18.0.2\\microsoft.build.framework.18.0.2.nupkg.sha512",
     "C:\\Users\\lexa\\.nuget\\packages\\microsoft.codeanalysis.analyzers\\3.11.0\\microsoft.codeanalysis.analyzers.3.11.0.nupkg.sha512",

@@ -23,13 +23,14 @@ public class LoginViewModel :  BaseViewModel
     {
         _repository = repository;
         LoginCommand = new RelayCommand(async _ => await Login());
+        ShowRegisterCommand = new RelayCommand(_ => OnShowRegister?.Invoke());
     }
 
     private async Task Login()
     {
         var user = await _repository.GetUserByUsernameAsync(Username);
         
-        if (user != null && user.Password == Password)
+        if (user != null && BCrypt.Net.BCrypt.Verify(Password, user.Password))
         {
             OnLoginSuccess?.Invoke(user);
         }
@@ -40,4 +41,5 @@ public class LoginViewModel :  BaseViewModel
     }
 
     public event Action<User> OnLoginSuccess;
+    public event Action OnShowRegister;
 }
