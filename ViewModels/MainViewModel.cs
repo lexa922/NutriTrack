@@ -5,6 +5,7 @@ using NutriTrack.Helpers;
 using NutriTrack.Models;
 using NutriTrack.Services;
 using NutriTrack.Services.Strategies;
+using NutriTrack.Views;
 
 namespace NutriTrack.ViewModels;
 
@@ -13,6 +14,7 @@ public class MainViewModel : BaseViewModel
     private readonly INutriRepository _repository;
         private readonly CalorieCalculator _calculator;
         public ICommand AddFoodCommand { get; }
+        public ICommand OpenAddProductWindowCommand { get; }
         
         private double _dailyGoal;
         private double _currentCalories;
@@ -21,6 +23,7 @@ public class MainViewModel : BaseViewModel
         private double _inputWeight;
         
         public ObservableCollection<Product> AvailableProducts { get; } = new();
+        
         
         public Product? SelectedProduct
         {
@@ -57,8 +60,22 @@ public class MainViewModel : BaseViewModel
             _currentUser = user;
             
             AddFoodCommand = new RelayCommand(async (p) => await AddFoodEntry(), (p) => CanAddFood());
+            OpenAddProductWindowCommand = new RelayCommand(_ => OpenAddProductWindow());
             
             Task.Run(InitializeAsync);
+        }
+        
+        private void OpenAddProductWindow()
+        {
+            var vm = new AddProductViewModel(_repository);
+            var win = new AddProductWindow { DataContext = vm };
+            
+            vm.ProductAdded += (newProduct) => {
+                AvailableProducts.Add(newProduct);
+                win.Close();
+            };
+
+            win.ShowDialog();
         }
         
         private bool CanAddFood() 
@@ -82,6 +99,7 @@ public class MainViewModel : BaseViewModel
             TodayLogs.Add(newLog);
             UpdateTotals();
         }
+    
 
         private async Task InitializeAsync()
         {

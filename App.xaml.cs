@@ -1,6 +1,8 @@
 ﻿using System.Configuration;
 using System.Data;
+using System.Globalization;
 using System.Windows;
+using System.Windows.Markup;
 using NutriTrack.Data;
 using NutriTrack.Data.Repositories;
 using NutriTrack.ViewModels;
@@ -15,6 +17,11 @@ public partial class App : Application
 {
     protected override void OnStartup(StartupEventArgs e)
     {
+        FrameworkElement.LanguageProperty.OverrideMetadata(
+            typeof(FrameworkElement),
+            new FrameworkPropertyMetadata(
+                XmlLanguage.GetLanguage(CultureInfo.InvariantCulture.IetfLanguageTag)));
+            
         base.OnStartup(e);
     
         var context = new AppDbContext();
