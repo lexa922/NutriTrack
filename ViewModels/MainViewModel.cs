@@ -106,10 +106,10 @@ public class MainViewModel : BaseViewModel
             set => SetProperty(ref _dailyGoal, value);
         }
 
-        public MainViewModel(INutriRepository repository, User user, IDispatcherService  dispatcherService)
+        public MainViewModel(INutriRepository repository, User user, IDispatcherService  dispatcherService, CalorieCalculator calculator)
         {
             _repository = repository;
-            _calculator = new CalorieCalculator();
+            _calculator = calculator;
             _calculator.SetStrategy(new MifflinStJeorStrategy());
             _dispatcherService = dispatcherService;
             
@@ -226,7 +226,7 @@ public class MainViewModel : BaseViewModel
         
                 var products = await _repository.GetAllProductsAsync();
         
-                App.Current.Dispatcher.Invoke(() => {
+                _dispatcherService.Invoke(() => {
                     TodayLogs.Clear();
                     foreach (var log in logs) TodayLogs.Add(log);
             

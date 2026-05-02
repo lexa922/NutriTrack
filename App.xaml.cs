@@ -17,6 +17,7 @@ namespace NutriTrack;
 public partial class App : Application
 {
     private readonly IDispatcherService _dispatcher = new WpfDispatcherService();
+    private readonly CalorieCalculator _calculator = new CalorieCalculator();
     
     protected override void OnStartup(StartupEventArgs e)
     {
@@ -41,7 +42,7 @@ public partial class App : Application
         loginWindow.DataContext = loginVM;
         
         loginVM.OnLoginSuccess += (user) => {
-            var mainWin = new MainWindow(user, repo, _dispatcher);
+            var mainWin = new MainWindow(user, repo, _dispatcher, _calculator);
             mainWin.Show();
             loginWindow.Close();
         };
@@ -61,7 +62,7 @@ public partial class App : Application
         regWindow.DataContext = regVM;
 
         regVM.OnLoginSuccess += (user) => {
-            var mainWin = new MainWindow(user, repo, _dispatcher);
+            var mainWin = new MainWindow(user, repo, _dispatcher,  _calculator);
             mainWin.Show();
             regWindow.Close();
         };
