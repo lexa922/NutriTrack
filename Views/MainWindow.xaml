@@ -101,7 +101,7 @@
                 <DataGridTextColumn Header="Час" Binding="{Binding ConsumptionDate, StringFormat={}{0:HH:mm}}" Width="60"/>
                 <DataGridTextColumn Header="Продукт" Binding="{Binding Product.Name}" Width="*"/>
                 <DataGridTextColumn Header="Вага" Binding="{Binding ServingSizeGrams}" Width="60"/>
-                <DataGridTextColumn Header="Ккал" Binding="{Binding Product.Calories}" Width="60"/>
+                <DataGridTextColumn Header="Ккал" Binding="{Binding TotalCalories}" Width="60"/>
             </DataGrid.Columns>
         </DataGrid>
         

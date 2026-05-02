@@ -13,6 +13,8 @@ public class MainViewModel : BaseViewModel
 {
     private readonly INutriRepository _repository;
         private readonly CalorieCalculator _calculator;
+        
+        private readonly IDispatcherService _dispatcherService;
         public ICommand AddFoodCommand { get; }
         public ICommand OpenAddProductWindowCommand { get; }
         public ICommand DeleteLogCommand { get; }
@@ -104,11 +106,12 @@ public class MainViewModel : BaseViewModel
             set => SetProperty(ref _dailyGoal, value);
         }
 
-        public MainViewModel(INutriRepository repository, User user)
+        public MainViewModel(INutriRepository repository, User user, IDispatcherService  dispatcherService, CalorieCalculator calculator)
         {
             _repository = repository;
-            _calculator = new CalorieCalculator();
+            _calculator = calculator;
             _calculator.SetStrategy(new MifflinStJeorStrategy());
+            _dispatcherService = dispatcherService;
             
             _currentUser = user;
             
@@ -171,7 +174,7 @@ public class MainViewModel : BaseViewModel
             await _repository.AddFoodLogAsync(newLog);
             await _repository.SaveChangesAsync();
             
-            App.Current.Dispatcher.Invoke(() => {
+            _dispatcherService.Invoke(() => {
                 TodayLogs.Add(newLog);
                 UpdateTotals();
             });
@@ -192,9 +195,7 @@ public class MainViewModel : BaseViewModel
         private async Task UpdateLog()
         {
             double weight = InputWeight.GetValueOrDefault();
-
-            try 
-            {
+            
                 SelectedLog.ServingSizeGrams = weight;
                 SelectedLog.ProductId = SelectedProduct.Id;
                 SelectedLog.Product = SelectedProduct;
@@ -212,12 +213,6 @@ public class MainViewModel : BaseViewModel
                 UpdateTotals();
                 
                 SelectedLog = null;
-                System.Windows.MessageBox.Show("Запис успішно оновлено!");
-            }
-            catch (Exception ex)
-            {
-                System.Windows.MessageBox.Show($"Помилка збереження: {ex.Message}");
-            }
         }
     
 
@@ -231,7 +226,7 @@ public class MainViewModel : BaseViewModel
         
                 var products = await _repository.GetAllProductsAsync();
         
-                App.Current.Dispatcher.Invoke(() => {
+                _dispatcherService.Invoke(() => {
                     TodayLogs.Clear();
                     foreach (var log in logs) TodayLogs.Add(log);
             
@@ -247,23 +242,10 @@ public class MainViewModel : BaseViewModel
 
         private void UpdateTotals()
         {
-            double cals = 0, prot = 0, fat = 0, carbs = 0;
-
-            foreach (var log in TodayLogs)
-            {
-                if (log.Product == null) continue;
-                
-                double ratio = log.ServingSizeGrams / 100.0;
-
-                cals += log.Product.Calories * ratio;
-                prot += log.Product.Proteins * ratio;
-                fat += log.Product.Fats * ratio;
-                carbs += log.Product.Carbohydrates * ratio;
-            }
-
-            CurrentCalories = cals;
-            TotalProteins = prot;
-            TotalFats = fat;
-            TotalCarbs = carbs;
+            CurrentCalories = TodayLogs.Sum(log => log.TotalCalories);
+            TotalProteins = TodayLogs.Sum(log => log.TotalProteins);
+            TotalFats = TodayLogs.Sum(log => log.TotalFats);
+            TotalCarbs = TodayLogs.Sum(log => log.TotalCarbs);
         }
+    
 }

@@ -11,6 +11,7 @@ using System.Windows.Shapes;
 using NutriTrack.Data;
 using NutriTrack.Data.Repositories;
 using NutriTrack.Models;
+using NutriTrack.Services;
 using NutriTrack.ViewModels;
 
 namespace NutriTrack.Views;
@@ -20,10 +21,10 @@ namespace NutriTrack.Views;
 /// </summary>
 public partial class MainWindow : Window
 {
-    public MainWindow(User user, INutriRepository repository)
+    public MainWindow(User user, INutriRepository repository, IDispatcherService dispatcherService,  CalorieCalculator calculator)
     {
         InitializeComponent();
         
-        this.DataContext = new MainViewModel(repository, user);
+        this.DataContext = new MainViewModel(repository, user, dispatcherService, calculator);
     }
 }

@@ -50,7 +50,7 @@ public class SqliteNutriRepository : INutriRepository
     public async Task UpdateUserAsync(User user)
     {
         _context.Users.Update(user);
-        await Task.CompletedTask;
+        await _context.SaveChangesAsync();
     }
     
     public async Task AddUserAsync(User user)
