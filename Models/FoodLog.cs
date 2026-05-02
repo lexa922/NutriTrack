@@ -22,5 +22,17 @@ public class FoodLog
     public virtual Product Product { get; set; }
     
     [NotMapped]
-    public double TotalCalories => (Product.Calories * ServingSizeGrams) / 100;
+    public const double StandardPortionSize = 100.0;
+    
+    [NotMapped]
+    public double TotalCalories => (Product?.Calories * ServingSizeGrams / StandardPortionSize) ?? 0;
+    
+    [NotMapped]
+    public double TotalProteins => (Product?.Proteins * ServingSizeGrams / StandardPortionSize) ?? 0;
+    
+    [NotMapped]
+    public double TotalFats => (Product?.Fats * ServingSizeGrams / StandardPortionSize) ?? 0;
+    
+    [NotMapped]
+    public double TotalCarbs => (Product?.Carbohydrates * ServingSizeGrams / StandardPortionSize) ?? 0;
 }

@@ -242,23 +242,10 @@ public class MainViewModel : BaseViewModel
 
         private void UpdateTotals()
         {
-            double cals = 0, prot = 0, fat = 0, carbs = 0;
-
-            foreach (var log in TodayLogs)
-            {
-                if (log.Product == null) continue;
-                
-                double ratio = log.ServingSizeGrams / 100.0;
-
-                cals += log.Product.Calories * ratio;
-                prot += log.Product.Proteins * ratio;
-                fat += log.Product.Fats * ratio;
-                carbs += log.Product.Carbohydrates * ratio;
-            }
-
-            CurrentCalories = cals;
-            TotalProteins = prot;
-            TotalFats = fat;
-            TotalCarbs = carbs;
+            CurrentCalories = TodayLogs.Sum(log => log.TotalCalories);
+            TotalProteins = TodayLogs.Sum(log => log.TotalProteins);
+            TotalFats = TodayLogs.Sum(log => log.TotalFats);
+            TotalCarbs = TodayLogs.Sum(log => log.TotalCarbs);
         }
+    
 }
