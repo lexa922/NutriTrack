@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Markup;
 using NutriTrack.Data;
 using NutriTrack.Data.Repositories;
+using NutriTrack.Services;
 using NutriTrack.ViewModels;
 using NutriTrack.Views;
 
@@ -15,6 +16,8 @@ namespace NutriTrack;
 /// </summary>
 public partial class App : Application
 {
+    private readonly IDispatcherService _dispatcher = new WpfDispatcherService();
+    
     protected override void OnStartup(StartupEventArgs e)
     {
         FrameworkElement.LanguageProperty.OverrideMetadata(
@@ -38,7 +41,7 @@ public partial class App : Application
         loginWindow.DataContext = loginVM;
         
         loginVM.OnLoginSuccess += (user) => {
-            var mainWin = new MainWindow(user, repo);
+            var mainWin = new MainWindow(user, repo, _dispatcher);
             mainWin.Show();
             loginWindow.Close();
         };
@@ -58,7 +61,7 @@ public partial class App : Application
         regWindow.DataContext = regVM;
 
         regVM.OnLoginSuccess += (user) => {
-            var mainWin = new MainWindow(user, repo);
+            var mainWin = new MainWindow(user, repo, _dispatcher);
             mainWin.Show();
             regWindow.Close();
         };
