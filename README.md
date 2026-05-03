@@ -40,7 +40,7 @@ NutriTrack — це десктопний додаток на базі .NET WPF, 
 Проєкт використовує такі патерни проєктування:
 
 1. MVVM (Model-View-ViewModel): Основний архітектурний патерн.
-   - [Модель (Model)](./Models/User.cs)
+   - [Модель (Model)](./Models/Product.cs)
    - [Вигляд (View)](./Views/AddProductWindow.xaml)
 
    - [Модель-Вигляд (ViewModel)](./ViewModels/AddProductViewModel.cs)
