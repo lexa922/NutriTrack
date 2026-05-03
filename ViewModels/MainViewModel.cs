@@ -218,26 +218,29 @@ public class MainViewModel : BaseViewModel
 
         private async Task InitializeAsync()
         {
-            if (_currentUser != null)
-            {
-                DailyGoal = _calculator.CalculateDailyGoal(_currentUser);
-        
-                var logs = await _repository.GetLogsByDateAsync(DateTime.Now, _currentUser.Id);
-        
-                var products = await _repository.GetAllProductsAsync();
-        
-                _dispatcherService.Invoke(() => {
-                    TodayLogs.Clear();
-                    foreach (var log in logs) TodayLogs.Add(log);
-            
-                    AvailableProducts.Clear();
-                    foreach (var p in products) AvailableProducts.Add(p);
-                    
-                    ApplyFilter();
-                    
-                    UpdateTotals();
-                });
-            }
+            LoadDailyGoal();
+            await LoadAvailableProductsAsync();
+            await  LoadTodayLogsAsync();
+            UpdateTotals();
+        }
+        private void LoadDailyGoal()
+        {
+            DailyGoal = _calculator.CalculateDailyGoal(_currentUser);
+        }
+
+        private async Task LoadAvailableProductsAsync()
+        {
+            var products = await _repository.GetAllProductsAsync();
+            AvailableProducts.Clear();
+            foreach (var p in products) 
+                AvailableProducts.Add(p);
+        }
+
+        private async Task LoadTodayLogsAsync()
+        {
+            var logs = await _repository.GetLogsByDateAsync(DateTime.Now, _currentUser.Id);
+            TodayLogs.Clear();
+            foreach (var log in logs) TodayLogs.Add(log);
         }
 
         private void UpdateTotals()
